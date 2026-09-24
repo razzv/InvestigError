@@ -1,9 +1,9 @@
 [project]
 name = "investigerror"
 version = "0.1.0"
-description = "Offline investigation of structured webhook incident bundles"
+description = "Evidence-linked investigation of structured webhook incident bundles"
 requires-python = ">=3.12"
-dependencies = ["pydantic>=2.11,<3", "typer>=0.16,<1"]
+dependencies = ["anthropic>=1,<2", "pydantic>=2.11,<3", "typer>=0.16,<1"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8,<10", "ruff>=0.12,<1", "mypy>=1.17,<2"]

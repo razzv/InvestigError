@@ -117,6 +117,35 @@ class Finding(ContractModel):
     next_checks: list[str] = Field(default_factory=list)
 
 
+HypothesisCategory = Literal[
+    "duplicate_effect", "stale_state_application", "processing_failure_after_ack",
+    "no_issue_observed", "insufficient_evidence", "other",
+]
+
+
+class Hypothesis(ContractModel):
+    category: HypothesisCategory
+    statement: str = Field(min_length=1)
+    evidence_ids: list[str]
+    reasoning_summary: str = Field(min_length=1)
+    missing_evidence: list[str]
+    verification_steps: list[str]
+
+
+class Alternative(ContractModel):
+    statement: str = Field(min_length=1)
+    evidence_ids: list[str]
+    missing_evidence: list[str]
+
+
+class AIExplanation(ContractModel):
+    summary: str = Field(min_length=1)
+    hypotheses: list[Hypothesis]
+    alternatives: list[Alternative]
+    next_steps: list[str]
+    limitations: list[str]
+
+
 class ReportMetadata(ContractModel):
     application_version: str
     input_sha256: str
@@ -130,6 +159,8 @@ class ReportMetadata(ContractModel):
     estimated_cost: float | None = None
     selected_record_ids: list[str] = Field(default_factory=list)
     omitted_record_ids: list[str] = Field(default_factory=list)
+    selected_record_count: int = 0
+    omitted_record_count: int = 0
     warnings: list[str] = Field(default_factory=list)
 
 
@@ -145,5 +176,5 @@ class InvestigationReport(ContractModel):
     timeline: list[TimelineEntry]
     findings: list[Finding]
     evidence_limitations: list[str]
-    ai_explanation: dict[str, object] | None = None
+    ai_explanation: AIExplanation | None = None
     metadata: ReportMetadata

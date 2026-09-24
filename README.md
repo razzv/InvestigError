@@ -1,6 +1,6 @@
 # InvestigError
 
-InvestigError reads structured webhook incident exports and creates an evidence-linked timeline and deterministic findings. Its rules mode runs locally without credentials or network access. An optional LLM explanation is planned for INV-002; this version does not call a model.
+InvestigError reads structured webhook incident exports and creates an evidence-linked timeline and deterministic findings. Its rules mode runs locally without credentials or network access. An optional Anthropic explanation call can add hypotheses and next checks when the user explicitly enables cloud transmission.
 
 This is an investigation aid. A finding describes the supplied records and declared invariants; missing logs do not prove an operation never happened.
 
@@ -16,8 +16,16 @@ uv run investigerror analyze examples/incidents/example-001.json --mode rules --
 
 The analysis writes `artifacts/report.json` and `artifacts/report.md`. Use `--overwrite` to replace either file. Try `example-002` through `example-005` for duplicate effects, stale state, a complete trace and missing downstream evidence. See [the format guide](docs/incident-format.md) and [development guide](docs/development.md).
 
+For an AI explanation, set `ANTHROPIC_API_KEY` and `AI_MODEL` in your shell, then run:
+
+```sh
+uv run investigerror analyze examples/incidents/example-001.json --mode ai --allow-cloud --out artifacts/ai-report.json
+```
+
+`--allow-cloud` sends selected, sanitized incident records and deterministic findings to Anthropic. Inspect the input first and review the report before sharing it. No model is selected by default. A missing key/model or a provider or validation failure leaves the rules report in place and exits nonzero. The model's statements remain hypotheses; evidence references are checked for existence, not automatically verified for semantic support. No live provider call has been verified for this task.
+
 The package and CLI are named `investigerror`. JSON and JSONL are supported. Python 3.13.2 was used for local verification; the declared minimum is Python 3.12.
 
 ## Current scope
 
-INV-001 supplies the versioned contract, bounded ingestion, redaction, correlation, rules, five synthetic examples, CLI and JSON/Markdown exports. The browser UI, LLM provider, evaluation corpus and cross-language examples are later tasks in [the backlog](docs/backlog.md). Redaction is best-effort; review reports before sharing them.
+INV-001 supplies the versioned contract, bounded ingestion, redaction, correlation, rules, five synthetic examples, CLI and JSON/Markdown exports. INV-002 adds one bounded, structured provider call, validation and a synthetic prompt-injection fixture. The browser UI, evaluation corpus and cross-language examples are later tasks in [the backlog](docs/backlog.md). Redaction is best-effort; review reports before sharing them.

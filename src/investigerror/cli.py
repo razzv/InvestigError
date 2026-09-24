@@ -9,6 +9,7 @@ from typing import Annotated
 import typer
 
 from .analysis import analyze
+from .explanation import explain
 from .ingestion import InputError, read_bundle
 from .reporting import markdown
 
@@ -28,7 +29,7 @@ def validate(path: Path) -> None:
 
 def analyze_file(
     path: Path,
-    mode: Annotated[str, typer.Option(help="rules (offline); AI arrives in INV-002")] = "rules",
+    mode: Annotated[str, typer.Option(help="rules (offline) or ai (requires --allow-cloud)")] = "rules",
     out: Annotated[Path, typer.Option(help="JSON report path")] = Path("artifacts/report.json"),
     overwrite: Annotated[bool, typer.Option(help="Replace existing reports")] = False,
     allow_cloud: Annotated[bool, typer.Option(help="Explicit AI transmission permission")] = False,
@@ -49,19 +50,12 @@ def analyze_file(
     except (InputError, OSError) as exc:
         typer.echo(f"Invalid input: {exc}", err=True)
         raise typer.Exit(2) from exc
-    report = analyze(bundle)
-    if mode == "ai":
-        report.requested_mode = "ai"
-        report.ai_status = "unavailable"
-        reason = "AI provider integration is not available until INV-002."
-        if not allow_cloud:
-            reason = "AI mode requires --allow-cloud; no data was transmitted."
-        report.metadata.warnings.append(reason)
+    report = analyze(bundle) if mode == "rules" else explain(bundle, allow_cloud=allow_cloud)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report.model_dump(mode="json"), indent=2) + "\n", encoding="utf-8")
     sibling.write_text(markdown(report), encoding="utf-8")
     typer.echo(f"Wrote {out} and {sibling}")
-    if mode == "ai":
+    if mode == "ai" and report.ai_status != "completed":
         typer.echo(report.metadata.warnings[-1], err=True)
         raise typer.Exit(3)
 
