@@ -48,7 +48,37 @@ def markdown(report: InvestigationReport) -> str:
             entry.occurred_at_utc.isoformat(), record.id, record.kind.value,
             record.service, record.message, "; ".join(entry.relationships),
         )) + " |")
-    lines.extend(["", "## AI hypotheses", "",
-                  "No AI explanation requested." if report.ai_status == "not_requested"
-                  else f"AI status: {esc(report.ai_status)}", ""])
+    lines.extend(["", "## AI explanation", ""])
+    if report.ai_explanation:
+        explanation = report.ai_explanation
+        lines.extend([esc(explanation.summary), "", "### Hypotheses", ""])
+        for item in explanation.hypotheses:
+            lines.extend([
+                f"- {esc(item.category)}: {esc(item.statement)}",
+                f"  - Evidence: {', '.join(esc(eid) for eid in item.evidence_ids) or 'none cited'}",
+                f"  - Reasoning summary: {esc(item.reasoning_summary)}",
+            ])
+            lines.extend(f"  - Missing evidence: {esc(value)}" for value in item.missing_evidence)
+            lines.extend(f"  - Verify: {esc(value)}" for value in item.verification_steps)
+        lines.extend(["", "### Alternatives", ""])
+        for alternative in explanation.alternatives:
+            lines.append(f"- {esc(alternative.statement)}")
+            lines.append(f"  - Evidence: {', '.join(esc(eid) for eid in alternative.evidence_ids) or 'none cited'}")
+            lines.extend(f"  - Missing evidence: {esc(value)}" for value in alternative.missing_evidence)
+        lines.extend(["", "### Next steps", ""])
+        lines.extend(f"{index}. {esc(step)}" for index, step in enumerate(explanation.next_steps, 1))
+        lines.extend(["", "### AI limitations", ""])
+        lines.extend(f"- {esc(value)}" for value in explanation.limitations)
+    elif report.ai_status == "not_requested":
+        lines.append("No AI explanation requested.")
+    else:
+        lines.append(f"AI status: {esc(report.ai_status)}. The rules report remains available.")
+    lines.extend([
+        "", "## Context coverage", "",
+        f"Selected records: {report.metadata.selected_record_count}; "
+        f"omitted records: {report.metadata.omitted_record_count}.",
+        "", "## Warnings", "",
+    ])
+    lines.extend(f"- {esc(item)}" for item in report.metadata.warnings)
+    lines.append("")
     return "\n".join(lines)

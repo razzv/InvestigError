@@ -1,5 +1,83 @@
 {
   "$defs": {
+    "AIExplanation": {
+      "additionalProperties": false,
+      "properties": {
+        "summary": {
+          "minLength": 1,
+          "title": "Summary",
+          "type": "string"
+        },
+        "hypotheses": {
+          "items": {
+            "$ref": "#/$defs/Hypothesis"
+          },
+          "title": "Hypotheses",
+          "type": "array"
+        },
+        "alternatives": {
+          "items": {
+            "$ref": "#/$defs/Alternative"
+          },
+          "title": "Alternatives",
+          "type": "array"
+        },
+        "next_steps": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Next Steps",
+          "type": "array"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "summary",
+        "hypotheses",
+        "alternatives",
+        "next_steps",
+        "limitations"
+      ],
+      "title": "AIExplanation",
+      "type": "object"
+    },
+    "Alternative": {
+      "additionalProperties": false,
+      "properties": {
+        "statement": {
+          "minLength": 1,
+          "title": "Statement",
+          "type": "string"
+        },
+        "evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "missing_evidence": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Missing Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "statement",
+        "evidence_ids",
+        "missing_evidence"
+      ],
+      "title": "Alternative",
+      "type": "object"
+    },
     "Finding": {
       "additionalProperties": false,
       "properties": {
@@ -54,6 +132,64 @@
         "evidence_ids"
       ],
       "title": "Finding",
+      "type": "object"
+    },
+    "Hypothesis": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "enum": [
+            "duplicate_effect",
+            "stale_state_application",
+            "processing_failure_after_ack",
+            "no_issue_observed",
+            "insufficient_evidence",
+            "other"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "statement": {
+          "minLength": 1,
+          "title": "Statement",
+          "type": "string"
+        },
+        "evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "reasoning_summary": {
+          "minLength": 1,
+          "title": "Reasoning Summary",
+          "type": "string"
+        },
+        "missing_evidence": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Missing Evidence",
+          "type": "array"
+        },
+        "verification_steps": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Verification Steps",
+          "type": "array"
+        }
+      },
+      "required": [
+        "category",
+        "statement",
+        "evidence_ids",
+        "reasoning_summary",
+        "missing_evidence",
+        "verification_steps"
+      ],
+      "title": "Hypothesis",
       "type": "object"
     },
     "Kind": {
@@ -410,6 +546,16 @@
           "title": "Omitted Record Ids",
           "type": "array"
         },
+        "selected_record_count": {
+          "default": 0,
+          "title": "Selected Record Count",
+          "type": "integer"
+        },
+        "omitted_record_count": {
+          "default": 0,
+          "title": "Omitted Record Count",
+          "type": "integer"
+        },
         "warnings": {
           "items": {
             "type": "string"
@@ -543,15 +689,13 @@
     "ai_explanation": {
       "anyOf": [
         {
-          "additionalProperties": true,
-          "type": "object"
+          "$ref": "#/$defs/AIExplanation"
         },
         {
           "type": "null"
         }
       ],
-      "default": null,
-      "title": "Ai Explanation"
+      "default": null
     },
     "metadata": {
       "$ref": "#/$defs/ReportMetadata"

@@ -18,3 +18,7 @@ The output model includes explicit AI status and metadata fields so later provid
 ## 2026-09-24: Review fixes for bounded redaction and wire validation
 
 Free-text redaction uses short `[E]` and `[S]` markers that do not expand a field already accepted by the input contract. Sensitive identifiers still receive stable collision-free aliases. Duplicate-ID errors report the record location without repeating the identifier, and validation text is passed through the known-pattern redactor before display. Wire timestamps require RFC 3339 strings with offsets; internal timezone-aware `datetime` values remain valid during sanitization. Numeric contract fields reject booleans and other coercible non-integers.
+
+## 2026-09-24: One bounded provider explanation
+
+INV-001 PR #1 was verified merged into `origin/main` at `9c48276` before branching for INV-002. AI mode requires both explicit `--allow-cloud` and configured credentials/model. The provider receives a sanitized, bounded JSON context with all referenced finding evidence or receives nothing when that evidence cannot fit. SDK retry is limited to one, and invalid responses are not retried. The output is validated against a strict explanation model and selected evidence IDs; semantic support remains a human review question. A provider failure leaves the rules report intact. The model has no default because no live model identifier has been tested for this project.
