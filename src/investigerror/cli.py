@@ -63,5 +63,19 @@ def analyze_file(
 app.command(name="analyze")(analyze_file)
 
 
+@app.command()
+def serve(
+    host: Annotated[str, typer.Option(help="Loopback interface")] = "127.0.0.1",
+    port: Annotated[int, typer.Option(help="Local HTTP port")] = 8000,
+) -> None:
+    """Serve the local browser interface."""
+    if host not in {"127.0.0.1", "localhost", "::1"}:
+        typer.echo("The local UI can only bind to a loopback address.", err=True)
+        raise typer.Exit(2)
+    import uvicorn
+
+    uvicorn.run("investigerror.api:app", host=host, port=port)
+
+
 if __name__ == "__main__":
     app()

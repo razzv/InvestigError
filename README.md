@@ -26,6 +26,14 @@ uv run investigerror analyze examples/incidents/example-001.json --mode ai --all
 
 The package and CLI are named `investigerror`. JSON and JSONL are supported. Python 3.13.2 was used for local verification; the declared minimum is Python 3.12.
 
+## Local browser UI
+
+```sh
+uv run investigerror serve --host 127.0.0.1 --port 8000
+```
+
+Open `http://127.0.0.1:8000`. Load a bundled example or upload JSON/JSONL, validate to inspect the sanitized input and exact selected provider context, then run rules. Evidence links select the corresponding record. JSON and Markdown downloads are created in the browser; the server does not save uploads or reports. The API accepts bounded raw file bytes in memory and rejects streams over 2 MiB. AI requires a separate unchecked cloud confirmation after preview. Missing credentials leave the rules report available with `unavailable` status. Redaction is best-effort; inspect the selected context before authorizing transmission. The local service is limited to loopback and is not designed for public hosting.
+
 ## Current scope
 
-INV-001 supplies the versioned contract, bounded ingestion, redaction, correlation, rules, five synthetic examples, CLI and JSON/Markdown exports. INV-002 adds one bounded, structured provider call, validation and a synthetic prompt-injection fixture. The browser UI, evaluation corpus and cross-language examples are later tasks in [the backlog](docs/backlog.md). Redaction is best-effort; review reports before sharing them.
+INV-001 supplies the versioned contract, bounded ingestion, redaction, correlation, rules, synthetic examples, CLI and JSON/Markdown exports. INV-002 adds one bounded, structured provider call, validation and a synthetic prompt-injection fixture. INV-003 adds the local browser UI and API. The evaluation corpus and cross-language examples are later tasks in [the backlog](docs/backlog.md). Redaction is best-effort; review reports before sharing them.

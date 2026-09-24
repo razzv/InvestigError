@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0", "incident_id": "example-001", "title": "Acknowledged delivery with processing failure",
+  "description": "Synthetic capture; later recovery outside the capture is unknown.",
+  "invariants": {"single_effect_operations": ["grant_access"], "monotonic_version_operations": []},
+  "records": [
+    {"id": "a1", "occurred_at": "2026-09-24T09:00:00Z", "service": "access-service", "kind": "event_received", "message": "Payment notification received", "provider": "sample-payments", "event_id": "evt_001", "attempt_id": "attempt_001", "correlation_id": "corr_001", "entity_id": "order_001", "operation": "grant_access", "business_key": "order_001_access"},
+    {"id": "a2", "occurred_at": "2026-09-24T09:00:01Z", "service": "access-service", "kind": "delivery_acknowledged", "message": "Delivery acknowledged", "provider": "sample-payments", "event_id": "evt_001", "attempt_id": "attempt_001", "correlation_id": "corr_001", "http_status": 200},
+    {"id": "a3", "occurred_at": "2026-09-24T09:00:02Z", "service": "access-service", "kind": "processing_failed", "message": "Provisioning failed while accessing the data store", "provider": "sample-payments", "event_id": "evt_001", "attempt_id": "attempt_001", "correlation_id": "corr_001", "error_code": "DB_UNAVAILABLE"}
+  ]
+}

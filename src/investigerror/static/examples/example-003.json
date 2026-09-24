@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0", "incident_id": "example-003", "title": "Lower state version applied later",
+  "description": "Synthetic stale-state capture with exporter-supplied local sequence.",
+  "invariants": {"single_effect_operations": [], "monotonic_version_operations": ["set_access_state"]},
+  "records": [
+    {"id": "c1", "occurred_at": "2026-09-24T11:00:00Z", "service": "access-service", "kind": "state_applied", "message": "Applied state version 8", "operation": "set_access_state", "entity_id": "account_003", "entity_version": 8, "sequence": 100},
+    {"id": "c2", "occurred_at": "2026-09-24T11:00:01Z", "service": "access-service", "kind": "state_applied", "message": "Applied older state version 7", "operation": "set_access_state", "entity_id": "account_003", "entity_version": 7, "sequence": 101}
+  ]
+}

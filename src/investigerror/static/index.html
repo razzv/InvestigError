@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>InvestigError · Local incident review</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script type="module" src="/static/app.js"></script>
+</head>
+<body>
+  <header class="masthead"><div class="wrap">
+    <div class="eyebrow">LOCAL WEBHOOK INVESTIGATION</div>
+    <h1>InvestigError</h1>
+    <p>Trace supplied evidence, check declared invariants, and choose what to inspect next.</p>
+  </div></header>
+  <main class="wrap">
+    <div id="status" role="status" aria-live="polite">Choose a synthetic example or upload a JSON/JSONL bundle.</div>
+    <div id="error" role="alert" hidden></div>
+    <div class="layout">
+      <section class="panel controls" aria-labelledby="input-heading">
+        <h2 id="input-heading">1. Load evidence</h2>
+        <label for="example">Bundled example</label>
+        <select id="example"><option value="">Select an example</option></select>
+        <label for="upload">Or upload a local JSON or JSONL file</label>
+        <input id="upload" type="file" accept=".json,.jsonl,application/json,application/x-ndjson">
+        <p class="hint">Maximum 2 MiB and 1,000 records. Files stay in this local server process; no incident is saved.</p>
+        <div class="actions"><button id="validate" disabled>Validate &amp; preview</button><button id="analyze" disabled>Run rules</button></div>
+        <h2>2. Optional cloud explanation</h2>
+        <p>Review the selected sanitized context below. Redaction is best-effort. The selected data will be sent to the configured Anthropic model only after you confirm and request it.</p>
+        <label class="check"><input id="consent" type="checkbox" disabled> I reviewed the preview and authorize sending this selected data to Anthropic.</label>
+        <button id="explain" disabled>Request AI explanation</button>
+        <h3>Selected provider context</h3>
+        <p id="coverage" class="hint">Validate a bundle to see what would be sent.</p>
+        <pre id="preview" tabindex="0">No context selected.</pre>
+        <h3>Sanitized input</h3>
+        <pre id="sanitized" tabindex="0">No bundle loaded.</pre>
+      </section>
+      <section class="panel results" aria-labelledby="results-heading">
+        <div class="section-head"><h2 id="results-heading">Investigation</h2><div class="actions"><button id="json-export" disabled>Download JSON</button><button id="md-export" disabled>Download Markdown</button></div></div>
+        <div id="empty" class="empty">Run rules to see observed findings, a timeline, and linked evidence.</div>
+        <div id="report" hidden>
+          <p id="report-meta" class="hint"></p>
+          <h3>Observed findings</h3><div id="findings"></div>
+          <h3>Evidence limitations</h3><ul id="limitations"></ul>
+          <h3>AI explanation</h3><div id="ai"></div>
+          <h3>Timeline</h3><ol id="timeline"></ol>
+          <h3 id="evidence-heading">Selected evidence</h3><div id="evidence" tabindex="-1" aria-labelledby="evidence-heading">Select an evidence link.</div>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
