@@ -8,8 +8,8 @@ Updated: 2026-09-24
 ## Active task
 - ID / outcome: INV-001 / incident contract, core rules and CLI.
 - Status: ready_for_review
-- Branch / base revision: `feat/incident-contract` / `0c697f2` (empty local `main` bootstrap).
-- PR: blocked; no owner-designated remote is configured.
+- Branch / base revision: `feat/incident-contract` / `0c697f2` (empty `main` bootstrap, now published to `origin`).
+- PR: pending creation against `origin/main`.
 - Dependencies: none.
 
 ## Verification
@@ -18,5 +18,5 @@ Updated: 2026-09-24
 - Checks not run and why: no live AI or .NET execution is part of INV-001.
 
 ## Next action
-- When an owner-designated remote is available, push this branch and open a PR into `main`; wait for the owner merge before INV-002.
-- Open blocker or owner decision: add an owner-designated Git remote to enable branch push and PR creation.
+- Push this branch and open the INV-001 PR into `main`; wait for the owner merge before INV-002.
+- Open blocker or owner decision: none for PR creation.

@@ -4,6 +4,8 @@
 
 The workspace had only a private build brief and no Git history or remote. The brief was moved to a sibling private directory before Git initialization. A single empty commit established local `main`; INV-001 was developed on `feat/incident-contract`. A PR requires an owner-designated remote.
 
+After the owner published the feature branch, the new remote had no `main`. The existing empty bootstrap commit was pushed as `origin/main` to provide the intended PR base; the implementation remains only on the feature branch.
+
 ## 2026-09-24: Rule scope and conservative evidence
 
 R1 uses the complete declared business tuple and distinct effect IDs. R2 requires a declared invariant and local sequence/version values. R3 matches service, provider, event and attempt; a provider must be equal on both records, including when both are absent. Repeated delivery and missing downstream records are informational observations. This prevents timestamps, retry logs and absence of capture from becoming unsupported fault claims.
