@@ -2,9 +2,11 @@
   "case_id": "case-012",
   "required": {
     "R3": [
-      "r1",
-      "r2",
-      "r3"
+      [
+        "r1",
+        "r2",
+        "r3"
+      ]
     ]
   },
   "prohibited": []

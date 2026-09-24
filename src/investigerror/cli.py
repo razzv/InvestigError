@@ -95,6 +95,9 @@ def evaluate(
     if not result["rules"]["quality_gate_passed"]:
         typer.echo("Offline quality gate failed; evaluation outputs were preserved.", err=True)
         raise typer.Exit(4)
+    if result["model_comparison"]["status"] in {"partial", "failed"}:
+        typer.echo("Live comparison stopped after a provider failure; completed results were preserved.", err=True)
+        raise typer.Exit(3)
 
 
 @app.command()

@@ -31,15 +31,20 @@ def make_case(index: int, split: str, variant: str) -> tuple[dict[str, Any], dic
     event = {"provider": "sample-payments", "event_id": f"evt-{index}", "attempt_id": "attempt-1"}
     effect = {"operation": "grant_access", "entity_id": "order-1", "business_key": "access-1"}
     state = {"operation": "update_access", "entity_id": "order-1"}
-    required: dict[str, list[str]] = {}
+    required: dict[str, list[str] | list[list[str]]] = {}
     prohibited: list[str] = []
-    if variant in {"duplicate", "same_effect", "different_key", "no_invariant"}:
+    if variant in {"duplicate", "same_effect", "different_key", "no_invariant", "two_duplicates"}:
         if variant != "no_invariant":
             invariants["single_effect_operations"] = ["grant_access"]
         first = add("effect_committed", effect_id="grant-1", **effect)
         extra = {**effect, "business_key": "access-2"} if variant == "different_key" else effect
         second = add("effect_committed", effect_id="grant-1" if variant == "same_effect" else "grant-2", **extra)
-        if variant == "duplicate":
+        if variant == "two_duplicates":
+            second_key = {**effect, "business_key": "access-2"}
+            third = add("effect_committed", effect_id="grant-3", **second_key)
+            fourth = add("effect_committed", effect_id="grant-4", **second_key)
+            required["R1"] = [[first, second], [third, fourth]]
+        elif variant == "duplicate":
             required["R1"] = [first, second]
         else:
             prohibited.append("R1")
@@ -105,14 +110,15 @@ def make_case(index: int, split: str, variant: str) -> tuple[dict[str, Any], dic
         "invariants": invariants,
         "records": records,
     }
-    label = {"case_id": case_id, "required": required, "prohibited": prohibited}
+    groups = {rule: [ids] if ids and isinstance(ids[0], str) else ids for rule, ids in required.items()}
+    label = {"case_id": case_id, "required": groups, "prohibited": prohibited}
     manifest = {
         "case_id": case_id,
         "input": f"inputs/{case_id}.json",
         "label": f"labels/{case_id}.json",
         "origin": "synthetic",
         "split": split,
-        "version": 1,
+        "version": 2,
         "template": variant,
     }
     return incident, label, manifest
@@ -137,8 +143,9 @@ def main() -> None:
         ("holdout", "missing_downstream"),
         ("holdout", "hostile_text"),
         ("holdout", "secret_text"),
+        ("train", "two_duplicates"),
     ]
-    manifest = {"schema_version": "1", "cases": []}
+    manifest = {"schema_version": "2", "cases": []}
     for index, (split, variant) in enumerate(cases, 1):
         incident, label, entry = make_case(index, split, variant)
         for folder, value in (("inputs", incident), ("labels", label)):

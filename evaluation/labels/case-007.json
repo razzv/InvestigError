@@ -2,8 +2,10 @@
   "case_id": "case-007",
   "required": {
     "REPEATED_DELIVERY": [
-      "r1",
-      "r2"
+      [
+        "r1",
+        "r2"
+      ]
     ]
   },
   "prohibited": [

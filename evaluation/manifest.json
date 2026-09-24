@@ -1,5 +1,5 @@
 {
-  "schema_version": "1",
+  "schema_version": "2",
   "cases": [
     {
       "case_id": "case-001",
@@ -7,7 +7,7 @@
       "label": "labels/case-001.json",
       "origin": "synthetic",
       "split": "train",
-      "version": 1,
+      "version": 2,
       "template": "duplicate"
     },
     {
@@ -16,7 +16,7 @@
       "label": "labels/case-002.json",
       "origin": "synthetic",
       "split": "train",
-      "version": 1,
+      "version": 2,
       "template": "same_effect"
     },
     {
@@ -25,7 +25,7 @@
       "label": "labels/case-003.json",
       "origin": "synthetic",
       "split": "train",
-      "version": 1,
+      "version": 2,
       "template": "stale"
     },
     {
@@ -34,7 +34,7 @@
       "label": "labels/case-004.json",
       "origin": "synthetic",
       "split": "train",
-      "version": 1,
+      "version": 2,
       "template": "ordered"
     },
     {
@@ -43,7 +43,7 @@
       "label": "labels/case-005.json",
       "origin": "synthetic",
       "split": "train",
-      "version": 1,
+      "version": 2,
       "template": "failed"
     },
     {
@@ -52,7 +52,7 @@
       "label": "labels/case-006.json",
       "origin": "synthetic",
       "split": "train",
-      "version": 1,
+      "version": 2,
       "template": "healthy"
     },
     {
@@ -61,7 +61,7 @@
       "label": "labels/case-007.json",
       "origin": "synthetic",
       "split": "train",
-      "version": 1,
+      "version": 2,
       "template": "repeat_delivery"
     },
     {
@@ -70,7 +70,7 @@
       "label": "labels/case-008.json",
       "origin": "synthetic",
       "split": "train",
-      "version": 1,
+      "version": 2,
       "template": "no_invariant"
     },
     {
@@ -79,7 +79,7 @@
       "label": "labels/case-009.json",
       "origin": "synthetic",
       "split": "train",
-      "version": 1,
+      "version": 2,
       "template": "no_sequence"
     },
     {
@@ -88,7 +88,7 @@
       "label": "labels/case-010.json",
       "origin": "synthetic",
       "split": "holdout",
-      "version": 1,
+      "version": 2,
       "template": "different_key"
     },
     {
@@ -97,7 +97,7 @@
       "label": "labels/case-011.json",
       "origin": "synthetic",
       "split": "holdout",
-      "version": 1,
+      "version": 2,
       "template": "conflict"
     },
     {
@@ -106,7 +106,7 @@
       "label": "labels/case-012.json",
       "origin": "synthetic",
       "split": "holdout",
-      "version": 1,
+      "version": 2,
       "template": "recovered"
     },
     {
@@ -115,7 +115,7 @@
       "label": "labels/case-013.json",
       "origin": "synthetic",
       "split": "holdout",
-      "version": 1,
+      "version": 2,
       "template": "provider_mismatch"
     },
     {
@@ -124,7 +124,7 @@
       "label": "labels/case-014.json",
       "origin": "synthetic",
       "split": "holdout",
-      "version": 1,
+      "version": 2,
       "template": "missing_ids"
     },
     {
@@ -133,7 +133,7 @@
       "label": "labels/case-015.json",
       "origin": "synthetic",
       "split": "holdout",
-      "version": 1,
+      "version": 2,
       "template": "missing_downstream"
     },
     {
@@ -142,7 +142,7 @@
       "label": "labels/case-016.json",
       "origin": "synthetic",
       "split": "holdout",
-      "version": 1,
+      "version": 2,
       "template": "hostile_text"
     },
     {
@@ -151,8 +151,17 @@
       "label": "labels/case-017.json",
       "origin": "synthetic",
       "split": "holdout",
-      "version": 1,
+      "version": 2,
       "template": "secret_text"
+    },
+    {
+      "case_id": "case-018",
+      "input": "inputs/case-018.json",
+      "label": "labels/case-018.json",
+      "origin": "synthetic",
+      "split": "train",
+      "version": 2,
+      "template": "two_duplicates"
     }
   ]
 }

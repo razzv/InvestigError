@@ -2,7 +2,9 @@
   "case_id": "case-017",
   "required": {
     "INSUFFICIENT_EVIDENCE": [
-      "r1"
+      [
+        "r1"
+      ]
     ]
   },
   "prohibited": []

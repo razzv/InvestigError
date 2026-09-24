@@ -2,7 +2,9 @@
   "case_id": "case-015",
   "required": {
     "MISSING_DOWNSTREAM": [
-      "r1"
+      [
+        "r1"
+      ]
     ]
   },
   "prohibited": [

@@ -2,8 +2,10 @@
   "case_id": "case-002",
   "required": {
     "INSUFFICIENT_EVIDENCE": [
-      "r1",
-      "r2"
+      [
+        "r1",
+        "r2"
+      ]
     ]
   },
   "prohibited": [
