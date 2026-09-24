@@ -9,7 +9,7 @@ Updated: 2026-09-24
 - ID / outcome: INV-001 / incident contract, core rules and CLI.
 - Status: ready_for_review
 - Branch / base revision: `feat/incident-contract` / `0c697f2` (empty `main` bootstrap, now published to `origin`).
-- PR: pending creation against `origin/main`.
+- PR: [#1](https://github.com/razzv/InvestigError/pull/1), open and ready for owner review against `main`.
 - Dependencies: none.
 
 ## Verification
@@ -18,5 +18,5 @@ Updated: 2026-09-24
 - Checks not run and why: no live AI or .NET execution is part of INV-001.
 
 ## Next action
-- Push this branch and open the INV-001 PR into `main`; wait for the owner merge before INV-002.
-- Open blocker or owner decision: none for PR creation.
+- Wait for the owner to merge PR #1, then fetch `main` and begin INV-002 from the merged revision.
+- Open blocker or owner decision: owner merge of PR #1.

@@ -5,6 +5,7 @@
 The workspace had only a private build brief and no Git history or remote. The brief was moved to a sibling private directory before Git initialization. A single empty commit established local `main`; INV-001 was developed on `feat/incident-contract`. A PR requires an owner-designated remote.
 
 After the owner published the feature branch, the new remote had no `main`. The existing empty bootstrap commit was pushed as `origin/main` to provide the intended PR base; the implementation remains only on the feature branch.
+The remote default branch was set to `main` after PR #1 was opened, matching the repository workflow.
 
 ## 2026-09-24: Rule scope and conservative evidence
 
