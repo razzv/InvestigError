@@ -9,6 +9,7 @@ from typing import Any
 from pydantic import ValidationError
 
 from .models import IncidentBundle
+from .redaction import redact_text
 
 MAX_BYTES = 2 * 1024 * 1024
 
@@ -51,7 +52,7 @@ def parse_bundle(raw: bytes, suffix: str) -> IncidentBundle:
                 index = location[1]
                 if isinstance(index, int) and index < len(record_lines):
                     prefix = f"JSONL line {record_lines[index]}, "
-            messages.append(f"{prefix}{'.'.join(map(str, location))}: {issue['msg']}")
+            messages.append(redact_text(f"{prefix}{'.'.join(map(str, location))}: {issue['msg']}"))
         details = "; ".join(messages)
         raise InputError(details) from exc
 

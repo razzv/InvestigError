@@ -86,7 +86,7 @@ def test_recovery_does_not_erase_observed_failure() -> None:
     [
         (lambda d: d.pop("title"), "title"),
         (lambda d: d["records"][0].update(occurred_at="2026-09-24T09:00:00"), "timezone"),
-        (lambda d: d["records"][1].update(id="a1"), "duplicates evidence ID"),
+        (lambda d: d["records"][1].update(id="a1"), "duplicates an earlier evidence ID"),
         (lambda d: d["records"][0].update(mystery="value"), "mystery"),
         (lambda d: d.update(schema_version="2.0"), "schema_version"),
     ],
@@ -152,3 +152,64 @@ def test_redacted_record_id_does_not_collide_with_existing_id() -> None:
     ids = [record.id for record in report.evidence]
     assert len(ids) == len(set(ids))
     assert "ada@example.com" not in report.model_dump_json()
+
+
+def test_near_limit_sensitive_text_still_produces_report() -> None:
+    data = json.loads((EXAMPLES / "example-001.json").read_text(encoding="utf-8"))
+    data["title"] = "a@b.co " * 28  # 196 characters before redaction
+    data["description"] = "token=synthetic " * 125  # 2000 characters
+    data["records"][0]["message"] = "a@b.co " * 285  # 1995 characters
+    report = analyze(IncidentBundle.model_validate(data))
+    assert {finding.rule_id for finding in report.findings} == {"R3"}
+    assert len(report.title) <= 200
+    assert len(report.description or "") <= 2000
+    assert len(report.evidence[0].message) <= 2000
+    assert "a@b.co" not in report.model_dump_json()
+    assert "synthetic" not in report.model_dump_json()
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("occurred_at", 1),
+        ("occurred_at", True),
+        ("occurred_at", "2026-09-24 09:00:00Z"),
+        ("observed_at", 1),
+        ("sequence", True),
+        ("sequence", 1.0),
+        ("entity_version", True),
+        ("http_status", True),
+    ],
+)
+@pytest.mark.parametrize("suffix", [".json", ".jsonl"])
+def test_wire_contract_rejects_coerced_values(field: str, value: object, suffix: str) -> None:
+    data = json.loads((EXAMPLES / "example-001.json").read_text(encoding="utf-8"))
+    data["records"][0][field] = value
+    if suffix == ".json":
+        raw = json.dumps(data).encode()
+    else:
+        records = data.pop("records")
+        raw = "\n".join([
+            json.dumps({"type": "manifest", "bundle": data}),
+            *(json.dumps({"type": "record", "record": record}) for record in records),
+        ]).encode()
+    with pytest.raises(InputError, match=field):
+        parse_bundle(raw, suffix)
+
+
+@pytest.mark.parametrize("suffix", [".json", ".jsonl"])
+def test_wire_contract_accepts_offset_timestamp_and_integer_sequence(suffix: str) -> None:
+    data = json.loads((EXAMPLES / "example-003.json").read_text(encoding="utf-8"))
+    data["records"][0]["occurred_at"] = "2026-09-24T13:00:00+02:00"
+    data["records"][0]["observed_at"] = "2026-09-24T11:00:01Z"
+    if suffix == ".json":
+        raw = json.dumps(data).encode()
+    else:
+        records = data.pop("records")
+        raw = "\n".join([
+            json.dumps({"type": "manifest", "bundle": data}),
+            *(json.dumps({"type": "record", "record": record}) for record in records),
+        ]).encode()
+    report = analyze(parse_bundle(raw, suffix))
+    assert "R2" in {finding.rule_id for finding in report.findings}
+    assert report.timeline[0].occurred_at_utc.isoformat() == "2026-09-24T11:00:00+00:00"

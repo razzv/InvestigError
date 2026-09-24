@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from datetime import UTC, datetime
 from enum import StrEnum
 from typing import Literal
@@ -11,6 +12,11 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 
 class ContractModel(BaseModel):
     model_config = ConfigDict(extra="forbid")
+
+
+RFC3339_TIMESTAMP = re.compile(
+    r"\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})\Z"
+)
 
 
 class Kind(StrEnum):
@@ -53,11 +59,20 @@ class Record(ContractModel):
     operation: str | None = Field(default=None, max_length=200)
     business_key: str | None = Field(default=None, max_length=200)
     effect_id: str | None = Field(default=None, max_length=200)
-    http_status: int | None = Field(default=None, ge=100, le=599)
+    http_status: int | None = Field(default=None, strict=True, ge=100, le=599)
     error_code: str | None = Field(default=None, max_length=200)
-    entity_version: int | None = Field(default=None, ge=0)
-    sequence: int | None = Field(default=None, ge=0)
+    entity_version: int | None = Field(default=None, strict=True, ge=0)
+    sequence: int | None = Field(default=None, strict=True, ge=0)
     level: Literal["debug", "info", "warning", "error"] | None = None
+
+    @field_validator("occurred_at", "observed_at", mode="before")
+    @classmethod
+    def require_rfc3339_wire_value(cls, value: object) -> object:
+        if value is None or isinstance(value, datetime):
+            return value
+        if not isinstance(value, str) or not RFC3339_TIMESTAMP.fullmatch(value):
+            raise ValueError("timestamp must be an RFC 3339 string with timezone offset")
+        return value
 
     @field_validator("occurred_at", "observed_at")
     @classmethod
@@ -80,7 +95,7 @@ class IncidentBundle(ContractModel):
         seen: set[str] = set()
         for index, record in enumerate(self.records):
             if record.id in seen:
-                raise ValueError(f"records[{index}].id duplicates evidence ID {record.id!r}")
+                raise ValueError(f"records[{index}].id duplicates an earlier evidence ID")
             seen.add(record.id)
         return self
 

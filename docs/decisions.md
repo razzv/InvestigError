@@ -14,3 +14,7 @@ R1 uses the complete declared business tuple and distinct effect IDs. R2 require
 ## 2026-09-24: Offline report contract first
 
 The output model includes explicit AI status and metadata fields so later provider work can extend the same report. INV-001 writes `not_requested` in rules mode; an AI request writes a rules report with `unavailable` and exits nonzero. No placeholder model answer is produced.
+
+## 2026-09-24: Review fixes for bounded redaction and wire validation
+
+Free-text redaction uses short `[E]` and `[S]` markers that do not expand a field already accepted by the input contract. Sensitive identifiers still receive stable collision-free aliases. Duplicate-ID errors report the record location without repeating the identifier, and validation text is passed through the known-pattern redactor before display. Wire timestamps require RFC 3339 strings with offsets; internal timezone-aware `datetime` values remain valid during sanitization. Numeric contract fields reject booleans and other coercible non-integers.

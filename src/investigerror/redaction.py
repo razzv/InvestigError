@@ -16,9 +16,10 @@ SECRET = re.compile(
 
 
 def redact_text(value: str) -> str:
-    value = BEARER.sub("[REDACTED_CREDENTIAL]", value)
-    value = SECRET.sub("[REDACTED_CREDENTIAL]", value)
-    return EMAIL.sub("[REDACTED_EMAIL]", value)
+    # Short markers never expand a field that already passed its input limit.
+    value = BEARER.sub("[S]", value)
+    value = SECRET.sub("[S]", value)
+    return EMAIL.sub("[E]", value)
 
 
 def sanitize(bundle: IncidentBundle) -> IncidentBundle:

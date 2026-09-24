@@ -2,7 +2,7 @@
 Updated: 2026-09-24
 
 ## Current state
-- Working functionality: offline JSON/JSONL validation, sanitized timeline, deterministic R1-R3 findings and evidence-linked JSON/Markdown CLI reports.
+- Working functionality: offline JSON/JSONL validation, sanitized timeline, deterministic R1-R3 findings and evidence-linked JSON/Markdown CLI reports. PR review fixes cover bounded redaction, safe duplicate-ID errors and strict timestamp/integer wire values.
 - Known limitations: no provider adapter, HTTP API, browser UI or cross-language exporter yet. Redaction is best-effort.
 
 ## Active task
@@ -13,8 +13,8 @@ Updated: 2026-09-24
 - Dependencies: none.
 
 ## Verification
-- Revision checked: working tree before task commit.
-- Commands and observed outcomes: `uv sync --extra dev` succeeded with Python 3.13.2; `uv run pytest -q` passed 23 tests; `uv run ruff check .` and `uv run mypy src` passed; schema freshness test passed; JSON and JSONL validation passed; rules analysis wrote JSON/Markdown; the installed CLI validated a bundle from another working directory.
+- Revision checked: working tree before review-fix commit.
+- Commands and observed outcomes: `uv run pytest -q` passed 43 tests; `uv run ruff check .` passed; `uv run mypy src` passed for nine source files; `uv run pytest -q tests/test_schemas.py` passed. Schema regeneration produced no diff. Earlier `uv sync --extra dev` and CLI smoke tests passed with Python 3.13.2.
 - Checks not run and why: no live AI or .NET execution is part of INV-001.
 
 ## Next action
