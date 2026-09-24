@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "incident_id": "case-015",
+  "title": "Synthetic webhook capture",
+  "invariants": {
+    "single_effect_operations": [],
+    "monotonic_version_operations": []
+  },
+  "records": [
+    {
+      "id": "r1",
+      "occurred_at": "2026-02-01T00:00:00Z",
+      "service": "access-service",
+      "kind": "delivery_acknowledged",
+      "message": "delivery acknowledged",
+      "http_status": 202,
+      "provider": "sample-payments",
+      "event_id": "evt-15",
+      "attempt_id": "attempt-1"
+    }
+  ]
+}

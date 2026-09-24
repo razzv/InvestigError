@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "incident_id": "case-012",
+  "title": "Synthetic webhook capture",
+  "invariants": {
+    "single_effect_operations": [],
+    "monotonic_version_operations": []
+  },
+  "records": [
+    {
+      "id": "r1",
+      "occurred_at": "2026-02-01T00:00:00Z",
+      "service": "access-service",
+      "kind": "delivery_acknowledged",
+      "message": "delivery acknowledged",
+      "provider": "sample-payments",
+      "event_id": "evt-12",
+      "attempt_id": "attempt-1",
+      "http_status": 200
+    },
+    {
+      "id": "r2",
+      "occurred_at": "2026-02-01T00:00:01Z",
+      "service": "access-service",
+      "kind": "processing_failed",
+      "message": "processing failed",
+      "provider": "sample-payments",
+      "event_id": "evt-12",
+      "attempt_id": "attempt-1",
+      "error_code": "STORE_UNAVAILABLE"
+    },
+    {
+      "id": "r3",
+      "occurred_at": "2026-02-01T00:00:02Z",
+      "service": "access-service",
+      "kind": "processing_completed",
+      "message": "processing completed",
+      "provider": "sample-payments",
+      "event_id": "evt-12",
+      "attempt_id": "attempt-1"
+    }
+  ]
+}

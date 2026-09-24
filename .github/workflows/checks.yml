@@ -1,0 +1,26 @@
+name: Checks
+on:
+  push:
+  pull_request:
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+      - run: uv sync --locked --extra dev
+      - run: uv run ruff check .
+      - run: uv run mypy src
+      - run: uv run pytest -q
+      - run: git diff --exit-code -- evaluation/
+      - run: uv run python scripts/generate_schemas.py
+      - run: git diff --exit-code -- schemas/
+      - run: uv run investigerror validate examples/incidents/example-001.json
+      - run: uv run investigerror evaluate --mode rules --split all --out artifacts/evaluation.json
+      - run: dotnet build examples/dotnet/InvestigError.Sample/InvestigError.Sample.csproj --configuration Release

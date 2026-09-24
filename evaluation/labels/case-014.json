@@ -1,0 +1,11 @@
+{
+  "case_id": "case-014",
+  "required": {
+    "MISSING_DOWNSTREAM": [
+      "r1"
+    ]
+  },
+  "prohibited": [
+    "R3"
+  ]
+}

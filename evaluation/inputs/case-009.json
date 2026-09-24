@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "incident_id": "case-009",
+  "title": "Synthetic webhook capture",
+  "invariants": {
+    "single_effect_operations": [],
+    "monotonic_version_operations": [
+      "update_access"
+    ]
+  },
+  "records": [
+    {
+      "id": "r1",
+      "occurred_at": "2026-02-01T00:00:00Z",
+      "service": "access-service",
+      "kind": "state_applied",
+      "message": "state applied",
+      "sequence": 1,
+      "entity_version": 2,
+      "operation": "update_access",
+      "entity_id": "order-1"
+    },
+    {
+      "id": "r2",
+      "occurred_at": "2026-02-01T00:00:01Z",
+      "service": "access-service",
+      "kind": "state_applied",
+      "message": "state applied",
+      "entity_version": 1,
+      "operation": "update_access",
+      "entity_id": "order-1"
+    }
+  ]
+}
