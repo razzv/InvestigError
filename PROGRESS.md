@@ -19,5 +19,4 @@ Updated: 2026-09-24
 
 ## Next action
 - Wait for owner review and merge of PR #4. Do not start INV-005.
-- Open blocker or owner decision: none for PR creation.
-
+- Open blocker or owner decision: none.
