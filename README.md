@@ -32,7 +32,7 @@ The package and CLI are named `investigerror`. JSON and JSONL are supported. Pyt
 uv run investigerror serve --host 127.0.0.1 --port 8000
 ```
 
-Open `http://127.0.0.1:8000`. Load a bundled example or upload JSON/JSONL, validate to inspect the sanitized input and exact selected provider context, then run rules. Evidence links select the corresponding record. JSON and Markdown downloads are created in the browser; the server does not save uploads or reports. AI requires a separate unchecked cloud confirmation after preview. Missing credentials leave the rules report available with `unavailable` status. Redaction is best-effort; inspect the selected context before authorizing transmission. The local service is limited to loopback and is not designed for public hosting.
+Open `http://127.0.0.1:8000`. Load a bundled example or upload JSON/JSONL, validate to inspect the sanitized input and exact selected provider context, then run rules. Evidence links select the corresponding record. JSON and Markdown downloads are created in the browser; the server does not save uploads or reports. The API accepts bounded raw file bytes in memory and rejects streams over 2 MiB. AI requires a separate unchecked cloud confirmation after preview. Missing credentials leave the rules report available with `unavailable` status. Redaction is best-effort; inspect the selected context before authorizing transmission. The local service is limited to loopback and is not designed for public hosting.
 
 ## Current scope
 

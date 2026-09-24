@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "scripts": {
+    "test:browser": "node tests/browser_flow.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.58.0"
+  }
+}

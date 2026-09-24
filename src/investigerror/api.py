@@ -4,18 +4,18 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Annotated
 
-from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.concurrency import run_in_threadpool
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from .analysis import analyze
 from .context import ContextLimitError, select_context
 from .explanation import explain
 from .ingestion import MAX_BYTES, InputError, parse_bundle
-from .models import IncidentBundle
+from .models import IncidentBundle, InvestigationReport
 from .redaction import sanitize
 from .reporting import markdown
 
@@ -64,15 +64,21 @@ def example(example_id: str) -> FileResponse:
     return FileResponse(path, media_type="application/json" if path.suffix == ".json" else "application/x-ndjson")
 
 
-async def _bundle(file: UploadFile) -> IncidentBundle:
-    suffix = Path(file.filename or "").suffix.lower()
+async def _bundle(request: Request) -> IncidentBundle:
+    format_name = request.headers.get("x-incident-format")
+    if format_name not in {"json", "jsonl"}:
+        raise HTTPException(422, "X-Incident-Format must be json or jsonl.")
+    size = 0
+    parts: list[bytes] = []
+    async for chunk in request.stream():
+        size += len(chunk)
+        if size > MAX_BYTES:
+            raise HTTPException(413, f"input exceeds {MAX_BYTES} byte limit")
+        parts.append(chunk)
     try:
-        raw = await file.read(MAX_BYTES + 1)
-        return parse_bundle(raw, suffix)
+        return parse_bundle(b"".join(parts), f".{format_name}")
     except InputError as exc:
         raise HTTPException(422, str(exc)) from exc
-    finally:
-        await file.close()
 
 
 def _preview(bundle: IncidentBundle) -> dict[str, object]:
@@ -94,24 +100,24 @@ def _preview(bundle: IncidentBundle) -> dict[str, object]:
 
 
 @app.post("/api/validate")
-async def validate(file: Annotated[UploadFile, File()]) -> dict[str, object]:
-    return _preview(await _bundle(file))
+async def validate(request: Request) -> dict[str, object]:
+    return _preview(await _bundle(request))
 
 
-def _report_response(report) -> dict[str, object]:  # type: ignore[no-untyped-def]
+def _report_response(report: InvestigationReport) -> dict[str, object]:
     return {"report": report.model_dump(mode="json"), "markdown": markdown(report)}
 
 
 @app.post("/api/analyze")
-async def analyze_upload(file: Annotated[UploadFile, File()]) -> dict[str, object]:
-    return _report_response(analyze(await _bundle(file)))
+async def analyze_upload(request: Request) -> dict[str, object]:
+    return _report_response(analyze(await _bundle(request)))
 
 
 @app.post("/api/explain")
 async def explain_upload(
-    file: Annotated[UploadFile, File()],
-    allow_cloud: Annotated[bool, Form()] = False,
+    request: Request,
 ) -> dict[str, object]:
-    if not allow_cloud:
+    if request.headers.get("x-allow-cloud") != "true":
         raise HTTPException(400, "Explicit cloud consent is required; no data was transmitted.")
-    return _report_response(explain(await _bundle(file), allow_cloud=True))
+    bundle = await _bundle(request)
+    return _report_response(await run_in_threadpool(explain, bundle, allow_cloud=True))

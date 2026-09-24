@@ -41,16 +41,16 @@ function resetForSource(file) {
   status(file ? `Loaded ${file.name}. Validate it or run rules.` : 'Choose a synthetic example or upload a JSON/JSONL bundle.');
   refreshButtons();
 }
-async function request(path, fields) {
+async function request(path, allowCloud = false) {
   if (!source) return null;
   clearError();
   busy(true);
   status('Working locally…');
   try {
-    const form = new FormData();
-    form.append('file', source, source.name);
-    for (const [key, value] of Object.entries(fields)) form.append(key, value);
-    const response = await fetch(path, { method: 'POST', body: form });
+    const format = source.name.toLowerCase().endsWith('.jsonl') ? 'jsonl' : 'json';
+    const headers = { 'X-Incident-Format': format, 'Content-Type': 'application/octet-stream' };
+    if (allowCloud) headers['X-Allow-Cloud'] = 'true';
+    const response = await fetch(path, { method: 'POST', body: source, headers });
     const data = await response.json();
     if (!response.ok) {
       const detail = data.detail;
@@ -105,6 +105,7 @@ function renderReport(data) {
     card.append(node('strong', `${finding.rule_id} · ${finding.severity.toUpperCase()}`), node('p', finding.statement));
     const refs = node('div'); refs.append(node('span', 'Evidence: ')); addReferences(refs, finding.evidence_ids); card.append(refs);
     for (const limit of finding.limitations) card.append(node('p', `Limitation: ${limit}`, 'hint'));
+    for (const check of finding.next_checks) card.append(node('p', `Next check: ${check}`, 'hint'));
     $('findings').append(card);
   }
   if (!report.findings.length) $('findings').append(node('p', 'No rule findings.'));
@@ -116,6 +117,8 @@ function renderReport(data) {
       const card = node('article', undefined, 'hypothesis');
       card.append(node('strong', `Hypothesis · ${item.category}`), node('p', item.statement));
       const refs = node('div'); refs.append(node('span', 'Evidence: ')); addReferences(refs, item.evidence_ids); card.append(refs);
+      card.append(node('p', `Reasoning: ${item.reasoning_summary}`, 'hint'));
+      for (const missing of item.missing_evidence) card.append(node('p', `Missing evidence: ${missing}`, 'hint'));
       for (const step of item.verification_steps) card.append(node('p', `Verify: ${step}`, 'hint'));
       $('ai').append(card);
     }
@@ -124,12 +127,14 @@ function renderReport(data) {
       for (const item of report.ai_explanation.alternatives) {
         const row = node('p', item.statement + ' · Evidence: ');
         addReferences(row, item.evidence_ids); $('ai').append(row);
+        for (const missing of item.missing_evidence) $('ai').append(node('p', `Missing evidence: ${missing}`, 'hint'));
       }
     }
     if (report.ai_explanation.next_steps.length) {
       $('ai').append(node('h4', 'Next steps'));
       const list = node('ol'); for (const step of report.ai_explanation.next_steps) list.append(node('li', step)); $('ai').append(list);
     }
+    for (const limit of report.ai_explanation.limitations) $('ai').append(node('p', `AI limitation: ${limit}`, 'hint'));
   } else {
     $('ai').append(node('p', report.ai_status === 'not_requested' ? 'AI is off. Rules ran locally.' : `AI ${report.ai_status}. The rules report remains available.`, 'hint'));
   }
@@ -168,7 +173,7 @@ $('example').addEventListener('change', async (event) => {
 });
 $('upload').addEventListener('change', (event) => { $('example').value = ''; resetForSource(event.target.files[0] || null); });
 $('validate').addEventListener('click', async () => {
-  const data = await request('/api/validate', {});
+  const data = await request('/api/validate');
   if (!data) return;
   $('sanitized').textContent = JSON.stringify(data.bundle, null, 2);
   $('preview').textContent = data.provider_context ? JSON.stringify(data.provider_context, null, 2) : data.preview_error;
@@ -179,11 +184,11 @@ $('validate').addEventListener('click', async () => {
   refreshButtons();
   status(`Valid bundle: ${data.bundle.records.length} records. Review sanitized input and provider context.`);
 });
-$('analyze').addEventListener('click', async () => { const data = await request('/api/analyze', {}); if (data) renderReport(data); });
+$('analyze').addEventListener('click', async () => { const data = await request('/api/analyze'); if (data) renderReport(data); });
 $('consent').addEventListener('change', refreshButtons);
 $('explain').addEventListener('click', async () => {
   if (!previewReady || !$('consent').checked) return;
-  const data = await request('/api/explain', { allow_cloud: 'true' });
+  const data = await request('/api/explain', true);
   $('consent').checked = false;
   refreshButtons();
   if (data) renderReport(data);
