@@ -38,3 +38,7 @@ INV-003 PR #3 was verified merged into `origin/main` at `09f573e` before branchi
 ## 2026-09-24: INV-004 review corrections
 
 Review of PR #4 found that provider exceptions discarded a partial evaluation, one finding per rule overwrote other findings during grading, reserialization could expand non-ASCII provider payloads beyond the context limit, and fixed-mode sample inputs avoided the adverse operations. The runner now grades exact finding/evidence groups, retains completed provider results and known usage on a stopped live run, and checks the exact strings sent to each approach. A failed provider request has unknown usage and a nonzero CLI exit after JSON/Markdown are written. The .NET and Python corrected modes process duplicate grants, versions 2 then 1 and a transient failure; accepted and rejected actions have different evidence kinds. Corpus version 2 adds a two-finding R1 case. All provider regressions use synthetic adapters. Live model quality remains unmeasured.
+
+## 2026-09-25: Installed-wheel delivery check
+
+INV-004 PR #4 was verified merged into `origin/main` at `380ba7d` before branching for INV-005. CI now builds a wheel and installs it into a temporary environment, then runs the CLI from another directory and checks packaged prompt, UI and example resources. This catches packaging errors that source-tree tests can miss. The local smoke check passed on Python 3.13.2; CI uses Python 3.12.

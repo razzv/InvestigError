@@ -2,6 +2,19 @@
 
 A JSON file is one object with `schema_version`, `incident_id`, `title`, optional `description`, optional `invariants`, and non-empty `records`. A JSONL file begins with `{"type":"manifest","bundle":{...}}`, where `bundle` has the same fields except `records`. Each later non-empty line is `{"type":"record","record":{...}}`. Both normalize to the same contract. See [example-001](../examples/incidents/example-001.json) and the generated [input schema](../schemas/incident-bundle.schema.json).
 
+Minimal JSON example:
+
+```json
+{"schema_version":"1.0","incident_id":"sample","title":"One delivery","records":[{"id":"r1","occurred_at":"2026-09-24T09:00:00Z","service":"worker","kind":"event_received","message":"Received event"}]}
+```
+
+Equivalent JSONL (one object per line):
+
+```jsonl
+{"type":"manifest","bundle":{"schema_version":"1.0","incident_id":"sample","title":"One delivery"}}
+{"type":"record","record":{"id":"r1","occurred_at":"2026-09-24T09:00:00Z","service":"worker","kind":"event_received","message":"Received event"}}
+```
+
 `invariants.single_effect_operations` declares operations that may commit at most once for each `(service, operation, entity_id, business_key)`. `invariants.monotonic_version_operations` declares operations whose applied `entity_version` must not decrease when ordered by exporter-supplied local `sequence` within `(service, operation, entity_id)`. Omit an invariant when that business rule is unknown.
 
 Every record needs a unique evidence `id`, `occurred_at` with timezone, `service`, `kind` and `message`. Kinds are `event_received`, `delivery_acknowledged`, `processing_started`, `processing_completed`, `processing_failed`, `effect_committed`, `state_applied` and `log`. Optional fields are `observed_at`, `provider`, `event_id`, `attempt_id`, `correlation_id`, `entity_id`, `operation`, `business_key`, `effect_id`, `http_status`, `error_code`, `entity_version`, `sequence` and `level` (`debug`, `info`, `warning`, `error`). Optional fields may be null. IDs are exact strings; an `event_id` can recur on retries, while evidence `id` cannot. `occurred_at` is event time; `observed_at` is collector time. `sequence` must be monotonic for the local service/entity/operation scope when exported.

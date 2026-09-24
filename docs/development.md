@@ -1,18 +1,48 @@
 # Development
 
-Use Python 3.12 or newer and uv. Local checks were run with Python 3.13.2 on Windows PowerShell.
+Use Python 3.12 or newer, [uv](https://docs.astral.sh/uv/) and Git. Clone the repository, enter its root, and run the commands below. The lock file controls Python dependencies. .NET SDK 9 is needed for the cross-language sample and its full test coverage; Node.js and npm are needed for the browser regression.
+
+Windows PowerShell:
+
+```powershell
+git clone https://github.com/razzv/InvestigError.git
+Set-Location InvestigError
+uv sync --locked --extra dev
+uv run investigerror validate examples/incidents/example-001.json
+uv run investigerror analyze examples/incidents/example-001.json --mode rules --out artifacts/report.json
+uv run investigerror serve --host 127.0.0.1 --port 8000
+```
+
+macOS/Linux shell:
 
 ```sh
-uv sync --extra dev
+git clone https://github.com/razzv/InvestigError.git
+cd InvestigError
+uv sync --locked --extra dev
+uv run investigerror validate examples/incidents/example-001.json
+uv run investigerror analyze examples/incidents/example-001.json --mode rules --out artifacts/report.json
+uv run investigerror serve --host 127.0.0.1 --port 8000
+```
+
+Open `http://127.0.0.1:8000` after the server starts; stop it with Ctrl+C. For another example or repeat run, choose a new output path or pass `--overwrite`. The [demo script](demo-script.md) shows a short walkthrough. The [architecture diagram](architecture.md) and [limitations](limitations.md) explain what the report can support.
+
+Required offline checks from the repository root:
+
+```sh
+uv sync --locked --extra dev
 uv run pytest -q
 uv run ruff check .
 uv run mypy src
 uv run python scripts/generate_schemas.py
 uv run investigerror validate examples/incidents/example-001.json
-uv run investigerror analyze examples/incidents/example-001.json --mode rules --out artifacts/report.json
-uv run investigerror serve --host 127.0.0.1 --port 8000
+uv run investigerror analyze examples/incidents/example-001.json --mode rules --out artifacts/check-report.json --overwrite
 uv run investigerror evaluate --mode rules --split all --out artifacts/evaluation.json
+dotnet build examples/dotnet/InvestigError.Sample/InvestigError.Sample.csproj --configuration Release
+uv build
+uv run python scripts/check_installed_package.py
 ```
+
+After schema generation, `git diff --exit-code -- schemas/` verifies that committed schemas are current. After the offline evaluation, `git diff --exit-code -- evaluation/` verifies that the corpus was not changed. The installed-wheel smoke check is `uv run python scripts/check_installed_package.py` after `uv build`; it creates a temporary clean environment, installs the wheel and invokes the CLI from another directory.
 
 For the mocked browser regression, run `npm ci` and `npm run test:browser` after `uv sync --locked --extra dev`. It starts a temporary loopback server with synthetic provider output and runs headless Chrome through Playwright. Set `INV_BROWSER_CHANNEL` to another installed Chromium channel if Chrome is unavailable. No provider credentials or live call are used.
 

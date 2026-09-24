@@ -24,3 +24,5 @@ jobs:
       - run: uv run investigerror validate examples/incidents/example-001.json
       - run: uv run investigerror evaluate --mode rules --split all --out artifacts/evaluation.json
       - run: dotnet build examples/dotnet/InvestigError.Sample/InvestigError.Sample.csproj --configuration Release
+      - run: uv build
+      - run: uv run python scripts/check_installed_package.py
