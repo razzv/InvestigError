@@ -6,6 +6,8 @@ __pycache__/
 artifacts/
 dist/
 node_modules/
+**/bin/
+**/obj/
 .env
 .env.*
 !.env.example

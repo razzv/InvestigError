@@ -11,9 +11,12 @@ uv run python scripts/generate_schemas.py
 uv run investigerror validate examples/incidents/example-001.json
 uv run investigerror analyze examples/incidents/example-001.json --mode rules --out artifacts/report.json
 uv run investigerror serve --host 127.0.0.1 --port 8000
+uv run investigerror evaluate --mode rules --split all --out artifacts/evaluation.json
 ```
 
 For the mocked browser regression, run `npm ci` and `npm run test:browser` after `uv sync --locked --extra dev`. It starts a temporary loopback server with synthetic provider output and runs headless Chrome through Playwright. Set `INV_BROWSER_CHANNEL` to another installed Chromium channel if Chrome is unavailable. No provider credentials or live call are used.
+
+The cross-language sample needs .NET SDK 9. See [cross-language commands](cross-language.md) and the [evaluation protocol](evaluation.md). The test suite compares the .NET and Python exporters when the SDK is available. CI installs the SDK and runs that comparison, schema freshness and offline evaluation; it does not call a live model.
 
 AI is optional. Set `ANTHROPIC_API_KEY` and an explicit `AI_MODEL` in the shell; `.env.example` documents the names but is not loaded automatically. `AI_TIMEOUT_SECONDS` defaults to 30 and `AI_MAX_OUTPUT_TOKENS` to 3000. For example, in PowerShell use `$env:ANTHROPIC_API_KEY = '...'` and `$env:AI_MODEL = '...'`; in macOS/Linux shells use `export ANTHROPIC_API_KEY=...` and `export AI_MODEL=...`. Then run `uv run investigerror analyze examples/incidents/example-001.json --mode ai --allow-cloud --out artifacts/ai-report.json`. The explicit flag authorizes transmission of the selected sanitized context to Anthropic. The application does not choose a model or make a call without it.
 

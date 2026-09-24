@@ -1,0 +1,12 @@
+{
+  "case_id": "case-003",
+  "required": {
+    "R2": [
+      [
+        "r1",
+        "r2"
+      ]
+    ]
+  },
+  "prohibited": []
+}

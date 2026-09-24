@@ -1,0 +1,167 @@
+{
+  "schema_version": "2",
+  "cases": [
+    {
+      "case_id": "case-001",
+      "input": "inputs/case-001.json",
+      "label": "labels/case-001.json",
+      "origin": "synthetic",
+      "split": "train",
+      "version": 2,
+      "template": "duplicate"
+    },
+    {
+      "case_id": "case-002",
+      "input": "inputs/case-002.json",
+      "label": "labels/case-002.json",
+      "origin": "synthetic",
+      "split": "train",
+      "version": 2,
+      "template": "same_effect"
+    },
+    {
+      "case_id": "case-003",
+      "input": "inputs/case-003.json",
+      "label": "labels/case-003.json",
+      "origin": "synthetic",
+      "split": "train",
+      "version": 2,
+      "template": "stale"
+    },
+    {
+      "case_id": "case-004",
+      "input": "inputs/case-004.json",
+      "label": "labels/case-004.json",
+      "origin": "synthetic",
+      "split": "train",
+      "version": 2,
+      "template": "ordered"
+    },
+    {
+      "case_id": "case-005",
+      "input": "inputs/case-005.json",
+      "label": "labels/case-005.json",
+      "origin": "synthetic",
+      "split": "train",
+      "version": 2,
+      "template": "failed"
+    },
+    {
+      "case_id": "case-006",
+      "input": "inputs/case-006.json",
+      "label": "labels/case-006.json",
+      "origin": "synthetic",
+      "split": "train",
+      "version": 2,
+      "template": "healthy"
+    },
+    {
+      "case_id": "case-007",
+      "input": "inputs/case-007.json",
+      "label": "labels/case-007.json",
+      "origin": "synthetic",
+      "split": "train",
+      "version": 2,
+      "template": "repeat_delivery"
+    },
+    {
+      "case_id": "case-008",
+      "input": "inputs/case-008.json",
+      "label": "labels/case-008.json",
+      "origin": "synthetic",
+      "split": "train",
+      "version": 2,
+      "template": "no_invariant"
+    },
+    {
+      "case_id": "case-009",
+      "input": "inputs/case-009.json",
+      "label": "labels/case-009.json",
+      "origin": "synthetic",
+      "split": "train",
+      "version": 2,
+      "template": "no_sequence"
+    },
+    {
+      "case_id": "case-010",
+      "input": "inputs/case-010.json",
+      "label": "labels/case-010.json",
+      "origin": "synthetic",
+      "split": "holdout",
+      "version": 2,
+      "template": "different_key"
+    },
+    {
+      "case_id": "case-011",
+      "input": "inputs/case-011.json",
+      "label": "labels/case-011.json",
+      "origin": "synthetic",
+      "split": "holdout",
+      "version": 2,
+      "template": "conflict"
+    },
+    {
+      "case_id": "case-012",
+      "input": "inputs/case-012.json",
+      "label": "labels/case-012.json",
+      "origin": "synthetic",
+      "split": "holdout",
+      "version": 2,
+      "template": "recovered"
+    },
+    {
+      "case_id": "case-013",
+      "input": "inputs/case-013.json",
+      "label": "labels/case-013.json",
+      "origin": "synthetic",
+      "split": "holdout",
+      "version": 2,
+      "template": "provider_mismatch"
+    },
+    {
+      "case_id": "case-014",
+      "input": "inputs/case-014.json",
+      "label": "labels/case-014.json",
+      "origin": "synthetic",
+      "split": "holdout",
+      "version": 2,
+      "template": "missing_ids"
+    },
+    {
+      "case_id": "case-015",
+      "input": "inputs/case-015.json",
+      "label": "labels/case-015.json",
+      "origin": "synthetic",
+      "split": "holdout",
+      "version": 2,
+      "template": "missing_downstream"
+    },
+    {
+      "case_id": "case-016",
+      "input": "inputs/case-016.json",
+      "label": "labels/case-016.json",
+      "origin": "synthetic",
+      "split": "holdout",
+      "version": 2,
+      "template": "hostile_text"
+    },
+    {
+      "case_id": "case-017",
+      "input": "inputs/case-017.json",
+      "label": "labels/case-017.json",
+      "origin": "synthetic",
+      "split": "holdout",
+      "version": 2,
+      "template": "secret_text"
+    },
+    {
+      "case_id": "case-018",
+      "input": "inputs/case-018.json",
+      "label": "labels/case-018.json",
+      "origin": "synthetic",
+      "split": "train",
+      "version": 2,
+      "template": "two_duplicates"
+    }
+  ]
+}

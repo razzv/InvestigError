@@ -1,0 +1,11 @@
+{
+  "case_id": "case-016",
+  "required": {
+    "INSUFFICIENT_EVIDENCE": [
+      [
+        "r1"
+      ]
+    ]
+  },
+  "prohibited": []
+}

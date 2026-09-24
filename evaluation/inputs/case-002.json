@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "incident_id": "case-002",
+  "title": "Synthetic webhook capture",
+  "invariants": {
+    "single_effect_operations": [
+      "grant_access"
+    ],
+    "monotonic_version_operations": []
+  },
+  "records": [
+    {
+      "id": "r1",
+      "occurred_at": "2026-02-01T00:00:00Z",
+      "service": "access-service",
+      "kind": "effect_committed",
+      "message": "effect committed",
+      "effect_id": "grant-1",
+      "operation": "grant_access",
+      "entity_id": "order-1",
+      "business_key": "access-1"
+    },
+    {
+      "id": "r2",
+      "occurred_at": "2026-02-01T00:00:01Z",
+      "service": "access-service",
+      "kind": "effect_committed",
+      "message": "effect committed",
+      "effect_id": "grant-1",
+      "operation": "grant_access",
+      "entity_id": "order-1",
+      "business_key": "access-1"
+    }
+  ]
+}
