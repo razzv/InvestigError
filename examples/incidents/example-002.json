@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0", "incident_id": "example-002", "title": "Two committed access effects",
+  "description": "Synthetic duplicate-effect capture.",
+  "invariants": {"single_effect_operations": ["grant_access"], "monotonic_version_operations": []},
+  "records": [
+    {"id": "b1", "occurred_at": "2026-09-24T10:00:00Z", "service": "access-service", "kind": "event_received", "message": "First delivery", "provider": "sample-payments", "event_id": "evt_002", "attempt_id": "attempt_001"},
+    {"id": "b2", "occurred_at": "2026-09-24T10:00:01Z", "service": "access-service", "kind": "effect_committed", "message": "Access grant committed", "operation": "grant_access", "entity_id": "order_002", "business_key": "order_002_access", "effect_id": "grant_001"},
+    {"id": "b3", "occurred_at": "2026-09-24T10:01:00Z", "service": "access-service", "kind": "event_received", "message": "Retry delivery", "provider": "sample-payments", "event_id": "evt_002", "attempt_id": "attempt_002"},
+    {"id": "b4", "occurred_at": "2026-09-24T10:01:01Z", "service": "access-service", "kind": "effect_committed", "message": "Second access grant committed", "operation": "grant_access", "entity_id": "order_002", "business_key": "order_002_access", "effect_id": "grant_002"}
+  ]
+}

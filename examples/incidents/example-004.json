@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0", "incident_id": "example-004", "title": "Complete access processing trace",
+  "description": "Synthetic healthy capture; outcomes outside this trace are unknown.",
+  "invariants": {"single_effect_operations": ["grant_access"], "monotonic_version_operations": []},
+  "records": [
+    {"id": "d1", "occurred_at": "2026-09-24T12:00:00Z", "service": "access-service", "kind": "event_received", "message": "Payment notification received", "provider": "sample-payments", "event_id": "evt_004", "attempt_id": "attempt_001"},
+    {"id": "d2", "occurred_at": "2026-09-24T12:00:01Z", "service": "access-service", "kind": "delivery_acknowledged", "message": "Delivery acknowledged", "provider": "sample-payments", "event_id": "evt_004", "attempt_id": "attempt_001", "http_status": 200},
+    {"id": "d3", "occurred_at": "2026-09-24T12:00:02Z", "service": "access-service", "kind": "effect_committed", "message": "Access grant committed", "operation": "grant_access", "entity_id": "order_004", "business_key": "order_004_access", "effect_id": "grant_004"},
+    {"id": "d4", "occurred_at": "2026-09-24T12:00:03Z", "service": "access-service", "kind": "processing_completed", "message": "Provisioning completed", "provider": "sample-payments", "event_id": "evt_004", "attempt_id": "attempt_001"}
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0", "incident_id": "example-005", "title": "Acknowledgement without downstream capture",
+  "description": "Synthetic limited capture; missing records do not prove processing was lost.",
+  "records": [
+    {"id": "e1", "occurred_at": "2026-09-24T13:00:00Z", "service": "access-service", "kind": "event_received", "message": "Payment notification received", "provider": "sample-payments", "event_id": "evt_005", "attempt_id": "attempt_001"},
+    {"id": "e2", "occurred_at": "2026-09-24T13:00:01Z", "service": "access-service", "kind": "delivery_acknowledged", "message": "Delivery acknowledged", "provider": "sample-payments", "event_id": "evt_005", "attempt_id": "attempt_001", "http_status": 200}
+  ]
+}
