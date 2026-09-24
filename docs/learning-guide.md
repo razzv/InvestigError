@@ -24,7 +24,7 @@ The HTTP API uses `async def` to read a bounded request stream. The provider's s
 1. **Add one field:** Add an optional, bounded record field to `models.py`, regenerate schemas and validate a fixture. Expected: both JSON and generated schema accept it; unknown fields still fail.
 2. **Implement one rule:** Add a narrowly evidenced rule in `rules.py` and a fixture with positive and negative cases. Expected: a finding cites stable record IDs only for the positive case.
 3. **Add an edge-case fixture:** Add a repeated-delivery trace with one committed effect. Expected: no R1 duplicate-effect finding.
-4. **Simulate a timeout:** Inject a provider fake that raises `ProviderFailure`. Expected: rules findings survive, AI status is unavailable and the CLI reports a nonzero exit.
+4. **Simulate a timeout:** Inject a provider fake that raises `ProviderFailure`. Expected: rules findings remain available, `ai_status` is `failed`, and the CLI exits nonzero (exit code 3 for an unsuccessful AI request).
 5. **Trace a finding:** Analyze `example-002`, find an R1 `evidence_ids` entry in JSON, and locate that ID in the input. Expected: the cited records are the distinct committed effects, not the delivery records.
 
 These are learning exercises; they are not required setup steps.
