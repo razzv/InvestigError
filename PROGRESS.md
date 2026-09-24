@@ -1,22 +1,22 @@
 # Project status
-Updated: 2026-09-24
+Updated: 2026-09-25
 
 ## Current state
-- Working functionality: versioned JSON/JSONL ingestion, deterministic investigation, optional bounded Anthropic explanation, loopback browser UI, .NET and Python synthetic exporters, and a split 18-case evaluation corpus.
-- Known limitations: redaction is best-effort. Live model quality and behavior remain unmeasured without configured credentials/model and an authorized evaluation budget. Synthetic scores do not establish production accuracy.
+- Working functionality: versioned JSON/JSONL ingestion, deterministic evidence-linked findings, optional bounded Anthropic explanation, loopback browser UI, .NET and Python synthetic exporters, and an 18-case synthetic evaluation corpus.
+- Known limitations: redaction is best-effort; missing records limit causal claims. Live model quality, latency, token use and cost remain unmeasured. The inspected synthetic holdout is regression coverage, not a production benchmark. See [limitations](docs/limitations.md).
 
 ## Active task
-- ID / outcome: INV-004 / cross-language sample and synthetic evaluation review fixes.
+- ID / outcome: INV-005 / delivery documentation, learning walkthrough, CI packaging check and case-study draft.
 - Status: ready_for_review.
-- Branch / base revision: `feat/dotnet-python-evaluation` / `09f573e` (`origin/main`, verified merge of [INV-003 PR #3](https://github.com/razzv/InvestigError/pull/3)).
-- PR: [#4](https://github.com/razzv/InvestigError/pull/4), open for review.
-- Dependencies: INV-003 merged.
+- Branch / base revision: `docs/inv-005-delivery` / `380ba7d` (`origin/main`, verified merge of [INV-004 PR #4](https://github.com/razzv/InvestigError/pull/4)).
+- PR: pending creation.
+- Dependencies: INV-004 merged.
 
 ## Verification
-- Revision checked: INV-004 review-fix working tree on PR #4, based on `09f573e`.
-- Commands and observed outcomes: `uv run pytest -q` passed 91 tests, including mocked interrupted provider runs, multi-finding grading, non-ASCII outbound context bounds, and all four .NET/Python export modes. Ruff, mypy, schema generation/freshness, sample validation, 18-case offline evaluation, mocked browser flow and .NET Release build passed. The offline quality gate passed; this is synthetic software correctness, not a live model benchmark.
-- Checks not run and why: no live Anthropic call because credentials/model and an authorized evaluation budget are not configured. Model quality remains unmeasured.
+- Revision checked: INV-005 working tree before commit.
+- Commands and observed outcomes: `uv sync --locked --extra dev`; `uv run pytest -q` (91 passed); `uv run ruff check .`; `uv run mypy src`; schema generation and `git diff --exit-code -- schemas/ evaluation/`; sample validation and rules analysis; 18-case offline evaluation (quality gate passed); `npm ci` and `npm run test:browser`; .NET Release build, `check fixed` and fixed export; `uv build` and `uv run python scripts/check_installed_package.py` (wheel installed in a fresh temporary environment and CLI/resources checked outside the repository) all passed locally. The documented relative .NET export path initially failed; the demo script now uses an absolute path, which passed.
+- Checks not run and why: no live Anthropic call because model credentials and an authorized evaluation budget are not configured. No macOS/Linux machine was available for native setup verification; CI uses Linux/Python 3.12 for package and offline checks.
 
 ## Next action
-- Wait for owner review and merge of PR #4. Do not start INV-005.
+- Open the INV-005 PR into `main` after final diff review; owner reviews and merges. Do not deploy or publish a release.
 - Open blocker or owner decision: none.

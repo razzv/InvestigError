@@ -6,10 +6,10 @@ This is an investigation aid. A finding describes the supplied records and decla
 
 ## Try it
 
-Install [uv](https://docs.astral.sh/uv/), then run from the repository root:
+Install [uv](https://docs.astral.sh/uv/), then run from the repository root. [Windows PowerShell and macOS/Linux setup](docs/development.md) includes the exact commands and prerequisites.
 
 ```sh
-uv sync --extra dev
+uv sync --locked --extra dev
 uv run investigerror validate examples/incidents/example-001.json
 uv run investigerror analyze examples/incidents/example-001.json --mode rules --out artifacts/report.json
 ```
@@ -24,7 +24,7 @@ uv run investigerror analyze examples/incidents/example-001.json --mode ai --all
 
 `--allow-cloud` sends selected, sanitized incident records and deterministic findings to Anthropic. Inspect the input first and review the report before sharing it. No model is selected by default. A missing key/model or a provider or validation failure leaves the rules report in place and exits nonzero. The model's statements remain hypotheses; evidence references are checked for existence, not automatically verified for semantic support. No live provider call has been verified for this task.
 
-The package and CLI are named `investigerror`. JSON and JSONL are supported. Python 3.13.2 was used for local verification; the declared minimum is Python 3.12.
+The package and CLI are named `investigerror`. JSON and JSONL are supported. The declared minimum is Python 3.12.
 
 ## Local browser UI
 
@@ -37,3 +37,5 @@ Open `http://127.0.0.1:8000`. Load a bundled example or upload JSON/JSONL, valid
 ## Current scope
 
 INV-001 supplies the versioned contract, bounded ingestion, redaction, correlation, rules, synthetic examples, CLI and JSON/Markdown exports. INV-002 adds one bounded, structured provider call, validation and a synthetic prompt-injection fixture. INV-003 adds the local browser UI and API. INV-004 adds [.NET and Python exporters](docs/cross-language.md) and an [18-case synthetic evaluation](docs/evaluation.md). Run `uv run investigerror evaluate --mode rules --split all --out artifacts/evaluation.json` for the offline report. Passing synthetic cases does not measure live model quality or production accuracy. Redaction is best-effort; review reports before sharing them.
+
+See the [architecture](docs/architecture.md), [limitations](docs/limitations.md), [2–3 minute demo](docs/demo-script.md), [Python walkthrough](docs/learning-guide.md) and [engineering case-study draft](docs/case-study-draft.md).
