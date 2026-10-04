@@ -10,6 +10,7 @@ Updated: 2026-10-04
 - ID / outcome: INV-006 / Vercel-hosted rules demo.
 - Status: in_progress; implementation and local checks complete, deployment awaiting Vercel account access.
 - Branch / base revision: `feat/vercel-demo` / `4d2b38b` (`origin/main`).
+- PR: [#6](https://github.com/razzv/InvestigError/pull/6), open for owner review.
 - Scope: root Vercel FastAPI entrypoint, hosted UI disclosure, rules-only API guard, trusted hosts and HTTPS origin checks, deployment guide and regression test.
 
 ## Verification
@@ -22,6 +23,5 @@ Updated: 2026-10-04
 - Live Anthropic calls: not tested; public mode blocks them.
 
 ## Next action
-- Push the reviewed branch and open a PR into `main`; do not merge it on the owner's behalf.
 - Sign in to a Vercel account with access to `razzv/InvestigError`, connect or link the project, deploy a preview of this branch, and verify `/health`, an example rules report and the AI block on its URL.
 - After owner review and merge, decide whether to promote the deployment to the production Vercel domain. Do not claim the hosted demo is live until the URL has been checked.
