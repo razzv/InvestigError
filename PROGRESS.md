@@ -1,23 +1,27 @@
 # Project status
-Updated: 2026-09-25
+Updated: 2026-10-04
 
 ## Current state
-- Working functionality: versioned JSON/JSONL ingestion, deterministic evidence-linked findings, optional bounded Anthropic explanation, loopback browser UI, .NET and Python synthetic exporters, and an 18-case synthetic evaluation corpus.
-- Known limitations: redaction is best-effort; missing records limit causal claims. Live model quality, latency, token use and cost remain unmeasured. The inspected synthetic holdout is regression coverage, not a production benchmark. See [limitations](docs/limitations.md).
+- INV-001 through INV-005 are merged into `main`; PR #5 merge `4d2b38b` was fetched and verified before this branch.
+- Working functionality: versioned JSON/JSONL ingestion, deterministic evidence-linked findings, optional bounded Anthropic explanation in local mode, local browser UI, .NET and Python synthetic exporters, and an 18-case synthetic evaluation corpus.
+- Known limitations: redaction is best-effort; missing records limit causal claims. Live model quality, latency, token use and cost remain unmeasured. The inspected synthetic holdout is regression coverage, not a production benchmark.
 
 ## Active task
-- ID / outcome: INV-005 / delivery documentation, learning walkthrough, CI packaging check and case-study draft.
-- Status: ready_for_review.
-- Branch / base revision: `docs/inv-005-delivery` / `380ba7d` (`origin/main`, verified merge of [INV-004 PR #4](https://github.com/razzv/InvestigError/pull/4)).
-- PR: [#5](https://github.com/razzv/InvestigError/pull/5), open for owner review.
-- Dependencies: INV-004 merged.
+- ID / outcome: INV-006 / Vercel-hosted rules demo.
+- Status: in_progress; implementation and local checks complete, deployment awaiting Vercel account access.
+- Branch / base revision: `feat/vercel-demo` / `4d2b38b` (`origin/main`).
+- PR: [#6](https://github.com/razzv/InvestigError/pull/6), open for owner review.
+- Scope: root Vercel FastAPI entrypoint, hosted UI disclosure, rules-only API guard, trusted hosts and HTTPS origin checks, deployment guide and regression test.
 
 ## Verification
-- Revision checked: INV-005 review corrections on `docs/inv-005-delivery`, based on `86c0438`.
-- Completed corrections: the demo now reads quality-gate status and per-class rule metrics from `artifacts/evaluation.json`, and the human review sheet and unreviewed live-model fields from `artifacts/evaluation.md`. The timeout exercise now describes `ProviderFailure` as `ai_status: failed`, with rules findings preserved and a nonzero CLI exit. PR URL recorded above.
-- Commands and observed outcomes: `uv run pytest -q tests/test_explanation.py -k provider_failure_keeps_rules_report_without_retry` passed (2 parametrized cases); the regression asserts `failed` and preserved R3 findings. CLI exit code 3 for unsuccessful AI requests was confirmed in `src/investigerror/cli.py`. Generated artifacts show 18 cases, `measured_offline`, a passed quality gate, and R1/R2/R3 precision and recall of 1.0 on this synthetic corpus; the Markdown sheet marks live-model review fields `unreviewed`. Prior full INV-005 checks passed locally: 91 tests, Ruff, mypy, schema freshness, sample validation, 18-case offline quality gate, browser flow, .NET Release build and sample checks, and installed-wheel smoke check. Both GitHub Actions checks on PR #5 passed.
-- Checks not run and why: no full-suite rerun for these documentation-only corrections. No live Anthropic call because credentials and an authorized evaluation budget are not configured. macOS/Linux setup was not run natively; CI runs Linux/Python 3.12 checks.
+- `uv run pytest -q`: 92 passed, including isolated Vercel-entrypoint request tests.
+- `uv run ruff check .`: passed.
+- `uv run mypy src`: passed.
+- `uv run python scripts/generate_schemas.py --check`: passed.
+- `npm run test:browser`: passed local preview, consent, rules, evidence, mocked AI, exports, upload, JSONL, error and mobile flow.
+- Live Vercel function requests: not yet tested; Vercel CLI reports an invalid saved token and the browser requires sign-in.
+- Live Anthropic calls: not tested; public mode blocks them.
 
 ## Next action
-- Wait for owner review and merge of PR #5. Do not start another task, deploy or publish a release.
-- Open blocker or owner decision: none.
+- Sign in to a Vercel account with access to `razzv/InvestigError`, connect or link the project, deploy a preview of this branch, and verify `/health`, an example rules report and the AI block on its URL.
+- After owner review and merge, decide whether to promote the deployment to the production Vercel domain. Do not claim the hosted demo is live until the URL has been checked.

@@ -42,3 +42,7 @@ Review of PR #4 found that provider exceptions discarded a partial evaluation, o
 ## 2026-09-25: Installed-wheel delivery check
 
 INV-004 PR #4 was verified merged into `origin/main` at `380ba7d` before branching for INV-005. CI now builds a wheel and installs it into a temporary environment, then runs the CLI from another directory and checks packaged prompt, UI and example resources. This catches packaging errors that source-tree tests can miss. The local smoke check passed on Python 3.13.2; CI uses Python 3.12.
+
+## 2026-10-04: Rules-only public demo boundary
+
+INV-005 PR #5 was verified merged into `origin/main` at `4d2b38b` before branching for INV-006. Public hosting is a separate, explicitly requested scope. The Vercel entrypoint enables a hosted mode that blocks `/api/explain` before parsing a bundle or contacting a provider. The browser identifies hosted processing and asks visitors to use only synthetic or non-confidential data. Host checks allow Vercel deployment domains and exact custom domains supplied by configuration; mutating requests must have a matching HTTPS origin when an Origin header is present. The existing 2 MiB stream and 1,000-record limits still apply. This demo does not add accounts or rate limiting, so it is not positioned as a confidential-data or open-ended production service.

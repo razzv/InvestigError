@@ -8,4 +8,5 @@ Statuses: `planned`, `in_progress`, `blocked`, `ready_for_review`, `merged`. Eac
 | INV-002 | Anthropic adapter, versioned prompt, bounded context, evidence/output validation and fallback. Mocked success, missing key, timeout, transient failure, malformed output, bad references and injection case pass; live status is honest. | INV-001 merged | merged |
 | INV-003 | FastAPI and static browser UI for upload, validation, rules, explicit AI request, evidence navigation and exports. Manually verify browser workflow or state tooling limit. | INV-002 merged | merged |
 | INV-004 | .NET and Python exporters, 15-case split corpus, offline evaluation and comparison runner. Cross-language findings match and offline evaluation reproduces. | INV-003 merged | merged |
-| INV-005 | Setup and learning documentation, walkthrough, CI and packaging checks. Native commands and required offline checks pass. | INV-004 merged | ready_for_review |
+| INV-005 | Setup and learning documentation, walkthrough, CI and packaging checks. Native commands and required offline checks pass. | INV-004 merged | merged |
+| INV-006 | Publish a Vercel rules-only demo with working examples, validation, analysis and downloads. Direct AI requests are blocked; hosted request boundaries and deployment behavior are tested. | INV-005 merged | in_progress |
