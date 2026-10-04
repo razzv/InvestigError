@@ -1,5 +1,7 @@
 import asyncio
 import json
+import subprocess
+import sys
 import threading
 from pathlib import Path
 
@@ -102,9 +104,32 @@ def test_invalid_upload_and_cross_origin_are_rejected_without_echoing_secret() -
 
 def test_static_browser_assets_and_health() -> None:
     assert client.get("/health").json() == {"status": "ok"}
+    assert client.get("/api/config").json() == {"public_demo": False}
     assert "InvestigError" in client.get("/").text
     assert "textContent" in client.get("/static/app.js").text
     assert client.get("/static/styles.css").status_code == 200
+
+
+def test_vercel_entrypoint_runs_rules_and_blocks_cloud() -> None:
+    script = """
+from fastapi.testclient import TestClient
+from app import app
+
+client = TestClient(app, base_url='https://demo.vercel.app')
+assert client.get('/api/config').json() == {'public_demo': True}
+assert client.get('/').status_code == 200
+raw = client.get('/api/examples/example-001').content
+headers = {'X-Incident-Format': 'json', 'Origin': 'https://demo.vercel.app'}
+result = client.post('/api/analyze', content=raw, headers=headers)
+assert result.status_code == 200, result.text
+assert result.json()['report']['ai_status'] == 'not_requested'
+assert client.post('/api/explain', content=raw, headers={**headers, 'X-Allow-Cloud': 'true'}).status_code == 403
+bad_origin = {**headers, 'Origin': 'https://evil.example'}
+assert client.post('/api/analyze', content=raw, headers=bad_origin).status_code == 403
+assert TestClient(app, base_url='https://evil.example').get('/health').status_code == 400
+"""
+    result = subprocess.run([sys.executable, "-c", script], capture_output=True, text=True, check=False)
+    assert result.returncode == 0, result.stdout + result.stderr
 
 
 def test_packaged_examples_match_documented_fixtures() -> None:

@@ -3,6 +3,7 @@ let source = null;
 let report = null;
 let reportMarkdown = '';
 let previewReady = false;
+let cloudEnabled = false;
 
 function node(tag, content, className) {
   const element = document.createElement(tag);
@@ -21,8 +22,8 @@ function busy(value) {
 function refreshButtons() {
   $('validate').disabled = !source;
   $('analyze').disabled = !source;
-  $('consent').disabled = !previewReady;
-  $('explain').disabled = !previewReady || !$('consent').checked;
+  $('consent').disabled = !cloudEnabled || !previewReady;
+  $('explain').disabled = !cloudEnabled || !previewReady || !$('consent').checked;
 }
 function resetForSource(file) {
   source = file;
@@ -45,7 +46,7 @@ async function request(path, allowCloud = false) {
   if (!source) return null;
   clearError();
   busy(true);
-  status('Working locally…');
+  status('Analyzing…');
   try {
     const format = source.name.toLowerCase().endsWith('.jsonl') ? 'jsonl' : 'json';
     const headers = { 'X-Incident-Format': format, 'Content-Type': 'application/octet-stream' };
@@ -136,7 +137,7 @@ function renderReport(data) {
     }
     for (const limit of report.ai_explanation.limitations) $('ai').append(node('p', `AI limitation: ${limit}`, 'hint'));
   } else {
-    $('ai').append(node('p', report.ai_status === 'not_requested' ? 'AI is off. Rules ran locally.' : `AI ${report.ai_status}. The rules report remains available.`, 'hint'));
+    $('ai').append(node('p', report.ai_status === 'not_requested' ? 'AI is off. Deterministic rules produced this report.' : `AI ${report.ai_status}. The rules report remains available.`, 'hint'));
   }
   for (const warning of report.metadata.warnings) $('ai').append(node('p', warning, 'hint'));
   $('timeline').replaceChildren();
@@ -199,3 +200,16 @@ $('md-export').addEventListener('click', () => { if (report) download('md', repo
 fetch('/api/examples').then((response) => response.json()).then((items) => {
   for (const item of items) { const option = node('option', item.filename); option.value = item.id; $('example').append(option); }
 }).catch(() => error('Bundled examples could not be listed. Upload is still available.'));
+fetch('/api/config').then((response) => {
+  if (!response.ok) throw new Error('Service settings unavailable.');
+  return response.json();
+}).then((config) => {
+  cloudEnabled = !config.public_demo;
+  $('cloud-section').hidden = !cloudEnabled;
+  $('environment-note').textContent = config.public_demo
+    ? 'Public rules-only demo: uploads are processed by Vercel. Use synthetic or non-confidential data. AI calls are disabled.'
+    : 'Local session: incident data stays in this server process unless you explicitly request an AI explanation.';
+  refreshButtons();
+}).catch(() => {
+  $('environment-note').textContent = 'Service settings unavailable. Cloud explanation is disabled.';
+});

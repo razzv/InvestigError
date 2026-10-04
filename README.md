@@ -34,6 +34,10 @@ uv run investigerror serve --host 127.0.0.1 --port 8000
 
 Open `http://127.0.0.1:8000`. Load a bundled example or upload JSON/JSONL, validate to inspect the sanitized input and exact selected provider context, then run rules. Evidence links select the corresponding record. JSON and Markdown downloads are created in the browser; the server does not save uploads or reports. The API accepts bounded raw file bytes in memory and rejects streams over 2 MiB. AI requires a separate unchecked cloud confirmation after preview. Missing credentials leave the rules report available with `unavailable` status. Redaction is best-effort; inspect the selected context before authorizing transmission. The local service is limited to loopback and is not designed for public hosting.
 
+## Hosted rules demo
+
+The [Vercel deployment guide](docs/vercel.md) describes a separate public, rules-only mode. It serves bundled synthetic examples and accepts bounded JSON/JSONL uploads for validation and deterministic analysis. Public uploads are processed by the hosted function; use synthetic or non-confidential data. The hosted mode blocks Anthropic calls, including direct API requests. Run the local CLI or browser UI if you need the optional AI explanation.
+
 ## Current scope
 
 INV-001 supplies the versioned contract, bounded ingestion, redaction, correlation, rules, synthetic examples, CLI and JSON/Markdown exports. INV-002 adds one bounded, structured provider call, validation and a synthetic prompt-injection fixture. INV-003 adds the local browser UI and API. INV-004 adds [.NET and Python exporters](docs/cross-language.md) and an [18-case synthetic evaluation](docs/evaluation.md). Run `uv run investigerror evaluate --mode rules --split all --out artifacts/evaluation.json` for the offline report. Passing synthetic cases does not measure live model quality or production accuracy. Redaction is best-effort; review reports before sharing them.

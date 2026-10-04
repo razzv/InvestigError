@@ -1,8 +1,9 @@
-"""Loopback-only HTTP interface over the CLI analysis pipeline."""
+"""HTTP interface over the analysis pipeline, with a rules-only hosted demo mode."""
 
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
@@ -20,11 +21,16 @@ from .redaction import sanitize
 from .reporting import markdown
 
 STATIC = Path(__file__).parent / "static"
+PUBLIC_DEMO = os.getenv("INVESTIGERROR_PUBLIC_DEMO") == "1"
 EXAMPLES = {path.stem: path for path in sorted((STATIC / "examples").glob("*.json"))}
 EXAMPLES.update({f"{path.stem}-jsonl": path for path in sorted((STATIC / "examples").glob("*.jsonl"))})
 
-app = FastAPI(title="InvestigError local API", docs_url=None, redoc_url=None, openapi_url=None)
-app.add_middleware(TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost", "[::1]", "testserver"])
+app = FastAPI(title="InvestigError API", docs_url=None, redoc_url=None, openapi_url=None)
+hosts = ["127.0.0.1", "localhost", "[::1]", "testserver"]
+if PUBLIC_DEMO:
+    hosts.append("*.vercel.app")
+    hosts.extend(host.strip() for host in os.getenv("INVESTIGERROR_ALLOWED_HOSTS", "").split(",") if host.strip())
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=hosts)
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
 
 
@@ -32,7 +38,9 @@ app.mount("/static", StaticFiles(directory=STATIC), name="static")
 async def local_request_guard(request: Request, call_next):  # type: ignore[no-untyped-def]
     origin = request.headers.get("origin")
     if request.method not in {"GET", "HEAD"} and origin:
-        expected = f"{request.url.scheme}://{request.headers.get('host', '')}"
+        local_host = request.headers.get("host", "") in {"testserver", "localhost", "127.0.0.1"}
+        scheme = "https" if PUBLIC_DEMO and not local_host else request.url.scheme
+        expected = f"{scheme}://{request.headers.get('host', '')}"
         if origin != expected:
             return JSONResponse({"detail": "Cross-origin requests are not allowed."}, status_code=403)
     response = await call_next(request)
@@ -49,6 +57,11 @@ def index() -> FileResponse:
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/api/config")
+def config() -> dict[str, bool]:
+    return {"public_demo": PUBLIC_DEMO}
 
 
 @app.get("/api/examples")
@@ -117,6 +130,10 @@ async def analyze_upload(request: Request) -> dict[str, object]:
 async def explain_upload(
     request: Request,
 ) -> dict[str, object]:
+    if PUBLIC_DEMO:
+        raise HTTPException(
+            403, "Cloud explanation is disabled on the public demo. Run InvestigError locally to use it."
+        )
     if request.headers.get("x-allow-cloud") != "true":
         raise HTTPException(400, "Explicit cloud consent is required; no data was transmitted.")
     bundle = await _bundle(request)
